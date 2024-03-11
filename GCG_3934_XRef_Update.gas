@@ -1,0 +1,239 @@
+Program.Sub.ScreenSU.Start
+Gui.SS_Form1..Create
+Gui.SS_Form1..Caption("Part X Ref")
+Gui.SS_Form1..Size(3570,1770)
+Gui.SS_Form1..Position(0,0)
+Gui.SS_Form1..AlwaysOnTop(False)
+Gui.SS_Form1..FontName("Arial")
+Gui.SS_Form1..FontSize(8)
+Gui.SS_Form1..ForeColor(0)
+Gui.SS_Form1..Backcolor(-2147483633)
+Gui.SS_Form1..ControlBox(True)
+Gui.SS_Form1..MaxButton(False)
+Gui.SS_Form1..MinButton(False)
+Gui.SS_Form1..MousePointer(0)
+Gui.SS_Form1..Moveable(True)
+Gui.SS_Form1..Sizeable(False)
+Gui.SS_Form1..ShowInTaskBar(True)
+Gui.SS_Form1..TitleBar(True)
+Gui.SS_Form1..Event(unload,Unload)
+Gui.SS_Form1.lbl_txtCustPart.Create(label)
+Gui.SS_Form1.lbl_txtCustPart.Caption("Customer Part ")
+Gui.SS_Form1.lbl_txtCustPart.Visible(True)
+Gui.SS_Form1.lbl_txtCustPart.Size(1800,195)
+Gui.SS_Form1.lbl_txtCustPart.Zorder(1)
+Gui.SS_Form1.lbl_txtCustPart.Position(105,135)
+Gui.SS_Form1.lbl_txtCustPart.Enabled(True)
+Gui.SS_Form1.lbl_txtCustPart.Alignment(0)
+Gui.SS_Form1.lbl_txtCustPart.FontName("Arial")
+Gui.SS_Form1.lbl_txtCustPart.FontSize(8)
+Gui.SS_Form1.lbl_txtCustPart.Backcolor(-2147483633)
+Gui.SS_Form1.lbl_txtCustPart.BackStyle(0)
+Gui.SS_Form1.lbl_txtCustPart.Tooltip("")
+Gui.SS_Form1.lbl_txtCustPart.ControlGroup(0)
+Gui.SS_Form1.txtCustPart.Create(textbox)
+Gui.SS_Form1.txtCustPart.Text("")
+Gui.SS_Form1.txtCustPart.Visible(True)
+Gui.SS_Form1.txtCustPart.Size(3150,330)
+Gui.SS_Form1.txtCustPart.Zorder(1)
+Gui.SS_Form1.txtCustPart.Position(105,330)
+Gui.SS_Form1.txtCustPart.Enabled(True)
+Gui.SS_Form1.txtCustPart.Alignment(0)
+Gui.SS_Form1.txtCustPart.FontName("Arial")
+Gui.SS_Form1.txtCustPart.FontSize(8)
+Gui.SS_Form1.txtCustPart.Backcolor(16777215)
+Gui.SS_Form1.txtCustPart.BorderStyle(1)
+Gui.SS_Form1.txtCustPart.MaxLength(20)
+Gui.SS_Form1.txtCustPart.TabStop(True)
+Gui.SS_Form1.txtCustPart.TabIndex(1)
+Gui.SS_Form1.txtCustPart.Tooltip("")
+Gui.SS_Form1.txtCustPart.ControlGroup(0)
+Gui.SS_Form1.txtCustPart.DefaultValue("")
+Gui.SS_Form1.cmdUPdate.Create(button)
+Gui.SS_Form1.cmdUPdate.Caption("Update")
+Gui.SS_Form1.cmdUPdate.Visible(True)
+Gui.SS_Form1.cmdUPdate.Size(1000,360)
+Gui.SS_Form1.cmdUPdate.Zorder(0)
+Gui.SS_Form1.cmdUPdate.Position(100,750)
+Gui.SS_Form1.cmdUPdate.Enabled(True)
+Gui.SS_Form1.cmdUPdate.FontName("Arial")
+Gui.SS_Form1.cmdUPdate.FontSize(8)
+Gui.SS_Form1.cmdUPdate.TabStop(True)
+Gui.SS_Form1.cmdUPdate.TabIndex(2)
+Gui.SS_Form1.cmdUPdate.Tooltip("")
+Gui.SS_Form1.cmdUPdate.ControlGroup(0)
+Gui.SS_Form1.cmdUPdate.DefaultValue("")
+Gui.SS_Form1.cmdUPdate.Event(click,cmdUPdate_Click)
+gui.SS_Form1.lbl_txtCustPart.LabelStretch(True)
+
+
+Program.Sub.ScreenSU.End
+
+Program.Sub.Preflight.Start
+Variable.Global.sPart.Declare(String)
+Variable.Global.sLoc.Declare(String)
+Variable.UDT.uCust.Define("ID",String,ID)
+Variable.uGlobal.uCust.Declare("uCust")
+
+Variable.Global.sDesc.Declare(String)
+Program.Sub.Preflight.End
+
+Program.Sub.Main.Start
+F.Intrinsic.Control.SetErrorHandler("Main_Err")
+F.Intrinsic.Control.ClearErrors
+
+V.Local.sError.Declare(String)
+V.Local.sRef.Declare(String)
+
+F.ODBC.Connection!conX.OpenConnection(V.Ambient.PDSN,V.Ambient.PUser,V.Ambient.PPass)
+
+
+'Populate Hook
+F.Intrinsic.Control.If(V.Caller.Hook,=,"10120")
+	V.Passed.000068.Set("X-Ref Update")
+'Script 1 Button
+Function.Intrinsic.Control.ElseIf(V.Caller.Hook,=,"10210")
+	F.Intrinsic.String.GSSPartString(V.Passed.000007,V.Passed.000008,V.Global.sPart)
+	V.Global.sLoc.Set(V.Passed.000009)
+	'main desc for inventory.
+	V.Global.sDesc.Set(V.Passed.000012)
+	F.Intrinsic.Control.If(V.Global.sPart.Trim,=,"")
+		F.Intrinsic.UI.Msgbox("Part cannot be blank")
+		F.Intrinsic.Control.CallSub(Unload)
+	F.Intrinsic.Control.else
+		F.Intrinsic.Control.If(V.Caller.Switches,=,"O")
+			'ask for the customer cross reference and what it should be.
+			Gui.SS_Form1..Show
+			Gui.SS_Form1.txtCustPart.SetFocus
+		F.Intrinsic.Control.EndIf
+	Function.Intrinsic.Control.EndIf
+Function.Intrinsic.Control.EndIf
+
+
+F.Intrinsic.Control.ExitSub
+
+F.Intrinsic.Control.Label("Main_Err")
+F.Intrinsic.Control.If(V.Ambient.ErrorNumber,<>,0)
+	Function.Intrinsic.String.Concat("Project: GCG_3934_XRef_Update.gas",V.Ambient.Newline,V.Ambient.Newline,"Subroutine: ",V.Ambient.CurrentSubroutine,V.Ambient.NewLine,"Error Occurred ",V.Ambient.ErrorNumber," with description ",V.Ambient.ErrorDescription,V.Local.sError)
+	F.Intrinsic.UI.Msgbox(V.Local.sError)
+	Function.Intrinsic.Control.CallSub(Unload)
+Function.Intrinsic.Control.EndIf
+
+
+Program.Sub.Main.End
+
+Program.Sub.Unload.Start
+F.Intrinsic.Control.SetErrorHandler("Unload_Err")
+F.Intrinsic.Control.ClearErrors
+
+V.Local.sError.Declare(String)
+F.Intrinsic.UI.CloseWaitDialog
+F.ODBC.Connection!conX.Close
+F.Intrinsic.Control.end
+
+F.Intrinsic.Control.ExitSub
+
+F.Intrinsic.Control.Label("Unload_Err")
+F.Intrinsic.Control.If(V.Ambient.ErrorNumber,<>,0)
+	Function.Intrinsic.String.Concat("Project: GCG_3934_XRef_Update.gas",V.Ambient.Newline,V.Ambient.Newline,"Subroutine: ",V.Ambient.CurrentSubroutine,V.Ambient.NewLine,"Error Occurred ",V.Ambient.ErrorNumber," with description ",V.Ambient.ErrorDescription,V.Local.sError)
+	F.Intrinsic.UI.Msgbox(V.Local.sError)
+	F.Intrinsic.Control.End
+Function.Intrinsic.Control.EndIf
+
+
+Program.Sub.Unload.End
+
+Program.Sub.cmdUPdate_Click.Start
+F.Intrinsic.Control.SetErrorHandler("cmdUPdate_Click_Err")
+F.Intrinsic.Control.ClearErrors
+
+V.Local.sError.Declare(String)
+V.Local.iC.Declare(Long)
+V.Local.sQuery.Declare(String)
+V.Local.sNewCustPart.Declare(String)
+F.Intrinsic.Control.If(v.Screen.SS_Form1!txtCustPart.Text.trim,=,"")
+	F.Intrinsic.Control.ExitSub
+Function.Intrinsic.Control.EndIf
+
+'grab new customer cross reference part from screen.
+V.Local.sNewCustPart.Set(V.Screen.SS_Form1!txtCustPart.Text)
+Gui.SS_Form1..Visible(False)
+F.Intrinsic.UI.InvokeWaitDialog("Processing...")
+
+'now get our customers and load intor ou udt
+F.ODBC.Connection!conX.OpenLocalRecordsetRO("rst","Select Distinct ID From GCG_3934_Maint Order By ID")
+Function.Intrinsic.Control.If(V.ODBC.conX!rst.EOF,=,True)
+	F.Intrinsic.UI.Msgbox("Customer list to update Inv. Cross Reference is empty. Ending program.","No work was done.")
+	F.Intrinsic.Control.CallSub(Unload)
+Function.Intrinsic.Control.Else
+	'meaning we have something so lets do it.
+	F.Intrinsic.Variable.LoadUDTFromRecordset("conx","rst","v.uglobal.uCust",False)
+	F.ODBC.conX!rst.close
+	'open up a writable connection ot the INV_CROSS_REF table for Global Shop Part XRef
+	F.ODBC.Connection!conX.OpenLocalRecordsetRW("rst","Select * From INV_CROSS_REF")
+	F.Intrinsic.Control.For(V.Local.iC,V.uGlobal.uCust.LBound,V.uGlobal.uCust.UBound,1)
+		F.Intrinsic.String.Build("Processing XRef for Customer: {0}",V.uGlobal.uCust(v.Local.iC)!ID,V.Local.sQuery)
+		F.Intrinsic.UI.ChangeWaitStatus(V.Local.sQuery,V.Local.iC,0,V.uGlobal.uCust.UBound)
+		'now delete the cross ref for the customer if it exists for the customer and part.
+		F.Intrinsic.String.Build("Delete From INV_Cross_Ref Where Part = '{0}' And Location = '{1}' And Customer = '{2}'",V.Global.sPart.Trim,V.Global.sLoc.Trim,V.uGlobal.uCust(v.Local.iC)!ID,V.Local.sQuery)
+		F.ODBC.Connection!conX.Execute(V.Local.sQuery)
+		'now add in our new cross reference.
+		'ADD NEW
+		F.ODBC.conX!rst.AddNew
+		F.ODBC.conX!rst.Set!Part(V.Global.sPart.Trim)
+		F.ODBC.conX!rst.Set!Location(V.Global.sLoc.Trim)
+		F.ODBC.conX!rst.Set!Customer(V.uGlobal.uCust(v.Local.iC)!ID)
+		F.ODBC.conX!rst.Set!Customer_Part(V.Local.sNewCustPart.Trim)
+		'set defaults
+		F.ODBC.conX!rst.Set!Vendor("")
+		F.ODBC.conX!rst.Set!MFG_Part("")
+		F.ODBC.conX!rst.Set!MFG_Name("")
+		'desc
+		F.ODBC.conX!rst.Set!Description(V.Global.sDesc)
+		F.ODBC.conX!rst.Set!Web_Flag("")
+		F.ODBC.conX!rst.Set!User_Defined_Part("")
+		F.ODBC.conX!rst.Set!Status("")
+		F.ODBC.conX!rst.Set!Comment("")
+		F.ODBC.conX!rst.Set!PRTID("0")
+		F.ODBC.conX!rst.Set!Filler("")
+		F.ODBC.conX!rst.Update
+	F.Intrinsic.Control.Next(V.Local.iC)
+	F.ODBC.conX!rst.Close
+	'display that it's complete and exit
+	F.Intrinsic.UI.ChangeWaitStatus("Processing Complete. Ending Program.",V.Local.iC,0,V.uGlobal.uCust.UBound)
+	F.Intrinsic.UI.Sleep(2)
+Function.Intrinsic.Control.EndIf
+
+F.Intrinsic.Control.CallSub(Unload)
+
+F.Intrinsic.Control.ExitSub
+
+F.Intrinsic.Control.Label("cmdUPdate_Click_Err")
+F.Intrinsic.Control.If(V.Ambient.ErrorNumber,<>,0)
+	Function.Intrinsic.String.Concat("Project: GCG_3934_XRef_Update.gas",V.Ambient.Newline,V.Ambient.Newline,"Subroutine: ",V.Ambient.CurrentSubroutine,V.Ambient.NewLine,"Error Occurred ",V.Ambient.ErrorNumber," with description ",V.Ambient.ErrorDescription,V.Local.sError)
+	F.Intrinsic.UI.Msgbox(V.Local.sError)
+	Function.Intrinsic.Control.CallSub(Unload)
+Function.Intrinsic.Control.EndIf
+
+
+Program.Sub.cmdUPdate_Click.End
+
+Program.Sub.Comments.Start
+${$0$}$$}$TRT$}$7/1/2015 12:42:19 PM
+${$3$}$0$}$$}$0$}$-1$}$$}$12:00:00 AM$}$Quote 6710-1
+'TRT
+7/1/15
+
+
+Part XRef Script 1 button:
+
+Here the user will need to have selected a part, and the Part XRef will need to have been entered and saved.  Once that is done the Script 1 button will allow the user to update/add this information for the customers from the maintenance programs.  The table that will be updated will be the Inv_Corss_Ref table.
+
+Program.Sub.Comments.End
+Program.Sub.ScreenSS.Start
+SS_Form1{{CAPTION::Part X Ref
+SS_Form1.CTRL{{NAME::txtCustPart\\TYPE::2\\CAPTION::Customer Part \\GROUP::-1\\BROWSER::0\\SIZE::1
+SS_Form1.CTRL{{NAME::cmdUPdate\\TYPE::5\\CAPTION::Update\\GROUP::-1\\BROWSER::0\\SIZE::1
+
+Program.Sub.ScreenSS.End
+
