@@ -1,0 +1,435 @@
+Program.Sub.ScreenSU.Start
+gui.SS_Form1..create
+gui.SS_Form1..caption("XRef Customer Maint.")
+gui.SS_Form1..size(6675,5835)
+gui.SS_Form1..minx(0)
+gui.SS_Form1..miny(0)
+gui.SS_Form1..position(0,0)
+gui.SS_Form1..event(unload,ss_form1_unload)
+gui.SS_Form1..alwaysontop(False)
+gui.SS_Form1..fontname("Arial")
+gui.SS_Form1..fontsize(8)
+gui.SS_Form1..forecolor(0)
+gui.SS_Form1..fontstyle(,,,,)
+gui.SS_Form1..BackColor(-2147483633)
+gui.SS_Form1..controlbox(True)
+gui.SS_Form1..maxbutton(False)
+gui.SS_Form1..minbutton(False)
+gui.SS_Form1..mousepointer(0)
+gui.SS_Form1..moveable(True)
+gui.SS_Form1..sizeable(False)
+gui.SS_Form1..ShowInTaskBar(True)
+gui.SS_Form1..titlebar(True)
+gui.SS_Form1.lbl_txtCust.create(label,"Cust",True,1800,200,1,100,135,True,0,Arial,8,-2147483633,0)
+gui.SS_Form1.lbl_txtCust.defaultvalue("")
+gui.SS_Form1.lbl_txtCust.controlgroup(0)
+gui.SS_Form1.txtCust.create(textbox,"",True,1800,330,0,100,335,True,0,Arial,8,16777215,1)
+gui.SS_Form1.txtCust.event(change,txtcust_change)
+gui.SS_Form1.txtCust.event(gotfocus,txtCust_GotFocus)
+gui.SS_Form1.txtCust.maxLength(6)
+gui.SS_Form1.txtCust.defaultvalue("")
+gui.SS_Form1.txtCust.controlgroup(0)
+gui.SS_Form1.lbl_txtName.create(label,"Name",True,1800,200,1,1985,135,True,0,Arial,8,-2147483633,0)
+gui.SS_Form1.lbl_txtName.defaultvalue("")
+gui.SS_Form1.lbl_txtName.controlgroup(0)
+gui.SS_Form1.txtName.create(textbox,"",True,3645,330,0,1985,335,True,0,Arial,8,16777215,1)
+gui.SS_Form1.txtName.defaultvalue("")
+gui.SS_Form1.txtName.controlgroup(0)
+gui.SS_Form1.cmd_txtName.create(button)
+gui.SS_Form1.cmd_txtName.caption("^")
+gui.SS_Form1.cmd_txtName.visible(True)
+gui.SS_Form1.cmd_txtName.size(330,330)
+gui.SS_Form1.cmd_txtName.zorder(0)
+gui.SS_Form1.cmd_txtName.position(5835,335)
+gui.SS_Form1.cmd_txtName.enabled(True)
+gui.SS_Form1.cmd_txtName.fontname("Arial")
+gui.SS_Form1.cmd_txtName.fontsize(8)
+gui.SS_Form1.cmd_txtName.event(click,cmd_txtname_click)
+gui.SS_Form1.cmd_txtName.defaultvalue("")
+gui.SS_Form1.cmd_txtName.controlgroup(0)
+gui.SS_Form1.cmdAdd.create(button)
+gui.SS_Form1.cmdAdd.caption("Add")
+gui.SS_Form1.cmdAdd.visible(True)
+gui.SS_Form1.cmdAdd.size(1000,360)
+gui.SS_Form1.cmdAdd.zorder(0)
+gui.SS_Form1.cmdAdd.position(100,835)
+gui.SS_Form1.cmdAdd.enabled(True)
+gui.SS_Form1.cmdAdd.fontname("Arial")
+gui.SS_Form1.cmdAdd.fontsize(8)
+gui.SS_Form1.cmdAdd.event(click,cmdadd_click)
+gui.SS_Form1.cmdAdd.defaultvalue("")
+gui.SS_Form1.cmdAdd.controlgroup(0)
+gui.SS_Form1.cmdDelete.create(button)
+gui.SS_Form1.cmdDelete.caption("Delete")
+gui.SS_Form1.cmdDelete.visible(True)
+gui.SS_Form1.cmdDelete.size(1000,360)
+gui.SS_Form1.cmdDelete.zorder(0)
+gui.SS_Form1.cmdDelete.position(1185,835)
+gui.SS_Form1.cmdDelete.enabled(True)
+gui.SS_Form1.cmdDelete.fontname("Arial")
+gui.SS_Form1.cmdDelete.fontsize(8)
+gui.SS_Form1.cmdDelete.event(click,cmddelete_click)
+gui.SS_Form1.cmdDelete.defaultvalue("")
+gui.SS_Form1.cmdDelete.controlgroup(0)
+gui.SS_Form1.lvwCust.create(listview)
+gui.SS_Form1.lvwCust.view(3)
+gui.SS_Form1.lvwCust.addlistviewcolumn("ID",1500,0)
+gui.SS_Form1.lvwCust.addlistviewcolumn("Name",4000,0)
+gui.SS_Form1.lvwCust.visible(True)
+gui.SS_Form1.lvwCust.size(6000,3785)
+gui.SS_Form1.lvwCust.zorder(0)
+gui.SS_Form1.lvwCust.position(100,1365)
+gui.SS_Form1.lvwCust.enabled(True)
+gui.SS_Form1.lvwCust.borderstyle(1)
+gui.SS_Form1.lvwCust.fontname("Arial")
+gui.SS_Form1.lvwCust.fontsize(8)
+gui.SS_Form1.lvwCust.event(itemclick,lvwcust_itemclick)
+gui.SS_Form1.txtCust.tabstop(True)
+gui.SS_Form1.txtCust.tabindex(1)
+gui.SS_Form1.cmd_txtName.tabstop(True)
+gui.SS_Form1.cmd_txtName.tabindex(2)
+gui.SS_Form1.cmdAdd.tabstop(True)
+gui.SS_Form1.cmdAdd.tabindex(3)
+gui.SS_Form1.cmdDelete.tabstop(True)
+gui.SS_Form1.cmdDelete.tabindex(4)
+gui.SS_Form1.txtName.tabstop(True)
+gui.SS_Form1.txtName.tabindex(5)
+gui.SS_Form1.lvwCust.tabstop(True)
+gui.SS_Form1.lvwCust.tabindex(6)
+
+
+Program.Sub.ScreenSU.End
+
+Program.Sub.Preflight.Start
+Variable.Global.iKey.Declare(Long,0)
+
+Program.Sub.Preflight.End
+
+Program.Sub.Main.Start
+F.Intrinsic.Control.SetErrorHandler("Main_Err")
+F.Intrinsic.Control.ClearErrors
+
+V.Local.sError.Declare(String)
+V.Local.bExists.Declare(Boolean)
+
+
+
+F.ODBC.Connection!conX.OpenConnection(V.Ambient.PDSN,V.Ambient.PUser,V.Ambient.PPass)
+
+'refer to notes for further details regarding project
+'load any prev info
+
+'making sure the table exists....
+F.ODBC.Connection!conX.TableExists("GCG_3934_Maint",V.Local.bExists)
+F.Intrinsic.Control.If(V.Local.bExists,=,False)
+	F.Intrinsic.UI.Msgbox("Table GCG_3934_Maint has not been found. Please place a call in our Service Department referencing Quote 6710-1.","Missing Table")
+	F.Intrinsic.Control.CallSub(Ss_form1_unload)
+F.Intrinsic.Control.EndIf
+
+Gui.SS_Form1.txtName.Locked(True)
+
+Function.Intrinsic.Control.CallSub(Populate)
+Gui.SS_Form1..Show
+Gui.SS_Form1.txtCust.SetFocus
+F.Intrinsic.Control.ExitSub
+
+F.Intrinsic.Control.Label("Main_Err")
+F.Intrinsic.Control.If(V.Ambient.ErrorNumber,<>,0)
+	Function.Intrinsic.String.Concat("Project: GCG_3934_Cust_XRef_Maint.gas",V.Ambient.Newline,V.Ambient.Newline,"Subroutine: ",V.Ambient.CurrentSubroutine,V.Ambient.NewLine,"Error Occurred ",V.Ambient.ErrorNumber," with description ",V.Ambient.ErrorDescription,V.Local.sError)
+	F.Intrinsic.UI.Msgbox(V.Local.sError)
+	Function.Intrinsic.Control.CallSub(Ss_form1_unload)
+Function.Intrinsic.Control.EndIf
+
+
+Program.Sub.Main.End
+
+program.sub.txtcust_change.start
+F.Intrinsic.Control.SetErrorHandler("txtcust_change_Err")
+F.Intrinsic.Control.ClearErrors
+
+V.Local.sError.Declare(String)
+V.Local.sSQL.Declare(String)
+V.Local.sID.Declare(String)
+F.Intrinsic.Control.BlockEvents
+
+V.Local.sID.Set(V.Screen.SS_Form1!txtCust.Text)
+Function.Intrinsic.String.Build("Select Customer,Name_Customer From V_CUstomer_Master Where Customer = '{0}'",V.Local.sID.Trim,V.Local.sSQL)
+F.ODBC.Connection!conX.OpenLocalRecordsetRO("rst",V.Local.sSQL)
+Function.Intrinsic.Control.If(V.ODBC.conX!rst.EOF,=,False)
+	Gui.SS_Form1.txtCust.Text(V.ODBC.conX!rst.FieldValTrim!Customer)
+	Gui.SS_Form1.txtname.Text(V.ODBC.conX!rst.FieldValTrim!Name_Customer)
+	Gui.SS_Form1.cmdAdd.SetFocus
+Function.Intrinsic.Control.Else
+	Gui.SS_Form1.txtName.Text("")
+Function.Intrinsic.Control.EndIf
+F.ODBC.conX!rst.Close
+F.Intrinsic.Control.UnBlockEvents
+
+F.Intrinsic.Control.ExitSub
+
+F.Intrinsic.Control.Label("txtcust_change_Err")
+F.Intrinsic.Control.If(V.Ambient.ErrorNumber,<>,0)
+	Function.Intrinsic.String.Concat("Project: GCG_3934_Cust_XRef_Maint.gas",V.Ambient.Newline,V.Ambient.Newline,"Subroutine: ",V.Ambient.CurrentSubroutine,V.Ambient.NewLine,"Error Occurred ",V.Ambient.ErrorNumber," with description ",V.Ambient.ErrorDescription,V.Local.sError)
+	F.Intrinsic.UI.Msgbox(V.Local.sError)
+	Function.Intrinsic.Control.CallSub(Ss_form1_unload)
+Function.Intrinsic.Control.EndIf
+
+
+
+program.sub.txtcust_change.end
+
+program.sub.cmd_txtname_click.start
+F.Intrinsic.Control.SetErrorHandler("cmd_txtname_click_Err")
+F.Intrinsic.Control.ClearErrors
+
+V.Local.sError.Declare(String)
+V.Local.sRet.Declare(String)
+
+F.Intrinsic.UI.SetBrowserHotTypeAhead(True)
+F.Intrinsic.UI.Browser(205,"",V.Local.sRet)
+Function.Intrinsic.Control.BlockEvents
+Function.Intrinsic.Control.If(V.Local.sRet.Trim,<>,"***CANCEL***")
+	F.Intrinsic.String.Split(V.Local.sRet,"*!*",V.Local.sRet)
+	Gui.SS_Form1.txtCust.Text(V.Local.sRet(0).Trim)
+
+	Gui.SS_Form1.txtName.Text(V.Local.sRet(1).Trim)
+Function.Intrinsic.Control.EndIf
+
+Function.Intrinsic.Control.UnBlockEvents
+
+F.Intrinsic.Control.ExitSub
+
+F.Intrinsic.Control.Label("cmd_txtname_click_Err")
+F.Intrinsic.Control.If(V.Ambient.ErrorNumber,<>,0)
+	Function.Intrinsic.String.Concat("Project: GCG_3934_Cust_XRef_Maint.gas",V.Ambient.Newline,V.Ambient.Newline,"Subroutine: ",V.Ambient.CurrentSubroutine,V.Ambient.NewLine,"Error Occurred ",V.Ambient.ErrorNumber," with description ",V.Ambient.ErrorDescription,V.Local.sError)
+	F.Intrinsic.UI.Msgbox(V.Local.sError)
+Function.Intrinsic.Control.EndIf
+
+
+program.sub.cmd_txtname_click.end
+
+program.sub.ss_form1_unload.start
+F.Intrinsic.Control.SetErrorHandler("ss_form1_unload_Err")
+F.Intrinsic.Control.ClearErrors
+
+V.Local.sError.Declare(String)
+
+F.ODBC.Connection!conX.Close
+F.Intrinsic.Control.End
+
+
+F.Intrinsic.Control.ExitSub
+
+F.Intrinsic.Control.Label("ss_form1_unload_Err")
+F.Intrinsic.Control.If(V.Ambient.ErrorNumber,<>,0)
+	Function.Intrinsic.String.Concat("Project: GCG_3934_Cust_XRef_Maint.gas",V.Ambient.Newline,V.Ambient.Newline,"Subroutine: ",V.Ambient.CurrentSubroutine,V.Ambient.NewLine,"Error Occurred ",V.Ambient.ErrorNumber," with description ",V.Ambient.ErrorDescription,V.Local.sError)
+	F.Intrinsic.UI.Msgbox(V.Local.sError)
+	Function.Intrinsic.Control.End
+Function.Intrinsic.Control.EndIf
+
+
+program.sub.ss_form1_unload.end
+
+program.sub.cmddelete_click.start
+F.Intrinsic.Control.SetErrorHandler("cmddelete_click_Err")
+F.Intrinsic.Control.ClearErrors
+
+V.Local.sError.Declare(String)
+V.Local.sSQL.Declare(String)
+
+'remove that from the listview
+Gui.SS_Form1.lvwCust.RemoveItem(V.Global.ikey)
+
+'then remove it from the table
+F.Intrinsic.String.Build("Delete From GCG_XRef_Cust_Maint Where ID = '{0}'",v.Screen.SS_Form1!txtCust.text.trim,v.Local.sSQL)
+
+F.ODBC.Connection!conX.Execute(V.Local.sSQL)
+
+Gui.SS_Form1.txtCust.Text("")
+Gui.SS_Form1.txtName.Text("")
+Gui.SS_Form1.txtCust.SetFocus
+
+F.Intrinsic.Control.ExitSub
+
+F.Intrinsic.Control.Label("cmddelete_click_Err")
+F.Intrinsic.Control.If(V.Ambient.ErrorNumber,<>,0)
+	Function.Intrinsic.String.Concat("Project: GCG_3934_Cust_XRef_Maint.gas",V.Ambient.Newline,V.Ambient.Newline,"Subroutine: ",V.Ambient.CurrentSubroutine,V.Ambient.NewLine,"Error Occurred ",V.Ambient.ErrorNumber," with description ",V.Ambient.ErrorDescription,V.Local.sError)
+	F.Intrinsic.UI.Msgbox(V.Local.sError)
+	Function.Intrinsic.Control.CallSub(Ss_form1_unload)
+Function.Intrinsic.Control.EndIf
+
+
+program.sub.cmddelete_click.end
+
+program.sub.cmdadd_click.start
+F.Intrinsic.Control.SetErrorHandler("cmdadd_click_Err")
+F.Intrinsic.Control.ClearErrors
+
+V.Local.sError.Declare(String)
+V.Local.sSQL.Declare(String)
+
+Function.Intrinsic.Control.BlockEvents
+
+F.Intrinsic.Control.If(v.Screen.SS_Form1!txtCust.Text.trim,=,"")
+	F.Intrinsic.Control.UnBlockEvents
+	F.Intrinsic.Control.ExitSub
+F.Intrinsic.Control.EndIf
+
+'make sure its a valid customer
+f.Intrinsic.String.Build("Select Customer From V_Customer_Master Where CUstomer = '{0}'",v.Screen.SS_Form1!txtCust.Text.trim,v.Local.sSQL)
+F.ODBC.Connection!conX.OpenLocalRecordsetRO("rst",V.Local.sSQL)
+F.Intrinsic.Control.If(V.ODBC.conX!rst.EOF,=,True)
+	'meaning customer doesn't exist tell them and exit
+	f.Intrinsic.String.Build("Customer ID: {0} does not exist.",v.Screen.SS_Form1!txtCust.Text.trim,v.Local.sSQL)
+	F.Intrinsic.UI.Msgbox(V.Local.sSQL,"Customer not Found.")
+	Gui.SS_Form1.txtCust.SelectAll
+	Gui.SS_Form1.txtCust.SetFocus
+	F.Intrinsic.Control.UnBlockEvents
+	F.ODBC.conX!rst.Close
+	F.Intrinsic.Control.ExitSub
+F.Intrinsic.Control.EndIf
+F.ODBC.conX!rst.Close
+
+'also save it to our table.
+F.Intrinsic.String.Build("Select * From GCG_3934_Maint Where ID = '{0}'",V.Screen.SS_Form1!txtCust.Text.Trim,V.Local.sSQL)
+F.ODBC.Connection!conX.OpenLocalRecordsetRW("rst",V.Local.sSQL)
+F.Intrinsic.Control.If(V.ODBC.conX!rst.EOF,=,True)
+	F.ODBC.conX!rst.AddNew
+	f.ODBC.conX!rst.Set!ID(v.Screen.SS_Form1!txtCust.Text.trim)
+	f.ODBC.conX!rst.Set!Name(v.screen.SS_Form1!txtName.Text.trim)
+	F.ODBC.conX!rst.Update
+	F.ODBC.conX!rst.Close
+	F.Intrinsic.Math.Add(V.Global.iKey,1,V.Global.iKey)
+	Gui.SS_Form1.lvwCust.AddListItem(V.Global.iKey,V.Screen.SS_Form1!txtCust.Text)
+	Gui.SS_Form1.lvwCust.SetListItemSubItemText(V.Global.iKey,1,V.Screen.SS_Form1!txtName.Text)
+Function.Intrinsic.Control.EndIf
+
+Gui.SS_Form1.txtName.Text("")
+Gui.SS_Form1.txtCust.Text("")
+Gui.SS_Form1.txtCust.SetFocus
+Function.Intrinsic.Control.UnBlockEvents
+
+F.Intrinsic.Control.ExitSub
+
+F.Intrinsic.Control.Label("cmdadd_click_Err")
+F.Intrinsic.Control.If(V.Ambient.ErrorNumber,<>,0)
+	Function.Intrinsic.String.Concat("Project: GCG_3934_Cust_XRef_Maint.gas",V.Ambient.Newline,V.Ambient.Newline,"Subroutine: ",V.Ambient.CurrentSubroutine,V.Ambient.NewLine,"Error Occurred ",V.Ambient.ErrorNumber," with description ",V.Ambient.ErrorDescription,V.Local.sError)
+	F.Intrinsic.UI.Msgbox(V.Local.sError)
+	Function.Intrinsic.Control.CallSub(Ss_form1_unload)
+Function.Intrinsic.Control.EndIf
+
+
+program.sub.cmdadd_click.end
+
+program.sub.lvwcust_itemclick.start
+F.Intrinsic.Control.SetErrorHandler("lvwcust_itemclick_Err")
+F.Intrinsic.Control.ClearErrors
+
+V.Local.sError.Declare(String)
+V.Local.sRet.Declare(String)
+V.Local.iR.Declare(Long)
+
+Function.Intrinsic.Control.BlockEvents
+
+V.Global.iKey.Set(V.Screen.SS_Form1!lvwCust.SelectedItemKey)
+
+'read our items
+Gui.SS_Form1.lvwCust.ListitemKeyToOrdinal(V.Global.ikey,V.Local.iR)
+
+V.Local.sRet.Set(V.Screen.SS_Form1!lvwCust.ListItemTextExtended(v.Local.iR))
+
+
+F.Intrinsic.String.Split(V.Local.sRet,"*!*",V.Local.sRet)
+Gui.SS_Form1.txtCust.Text(V.Local.sRet(0))
+Gui.SS_Form1.txtName.Text(V.Local.sRet(1))
+Gui.SS_Form1.cmdDelete.SetFocus
+
+Function.Intrinsic.Control.UnBlockEvents
+
+
+F.Intrinsic.Control.ExitSub
+
+F.Intrinsic.Control.Label("lvwcust_itemclick_Err")
+F.Intrinsic.Control.If(V.Ambient.ErrorNumber,<>,0)
+	Function.Intrinsic.String.Concat("Project: GCG_3934_Cust_XRef_Maint.gas",V.Ambient.Newline,V.Ambient.Newline,"Subroutine: ",V.Ambient.CurrentSubroutine,V.Ambient.NewLine,"Error Occurred ",V.Ambient.ErrorNumber," with description ",V.Ambient.ErrorDescription,V.Local.sError)
+	F.Intrinsic.UI.Msgbox(V.Local.sError)
+	Function.Intrinsic.Control.CallSub(Ss_form1_unload)
+Function.Intrinsic.Control.EndIf
+
+
+program.sub.lvwcust_itemclick.end
+
+Program.Sub.Populate.Start
+F.Intrinsic.Control.SetErrorHandler("Populate_Err")
+F.Intrinsic.Control.ClearErrors
+
+V.Local.sError.Declare(String)
+
+V.Global.iKey.Set(0)
+
+F.ODBC.Connection!conX.OpenLocalRecordsetRO("rst","Select * From GCG_3934_Maint Order By ID")
+F.Intrinsic.Control.DoUntil(V.ODBC.conX!rst.EOF,=,True)
+	F.Intrinsic.Math.Add(V.Global.ikey,1,V.Global.ikey)
+	Gui.SS_Form1.lvwCust.AddListItem(V.Global.ikey,V.ODBC.conX!rst.FieldValTrim!ID)
+	Gui.SS_Form1.lvwCust.SetListItemSubItemText(V.Global.ikey,1,V.ODBC.conx!rst.FieldValTrim!Name)
+	F.ODBC.conX!rst.MoveNext
+Function.Intrinsic.Control.Loop
+
+F.ODBC.conx!rst.Close
+
+
+
+
+
+F.Intrinsic.Control.ExitSub
+
+F.Intrinsic.Control.Label("Populate_Err")
+F.Intrinsic.Control.If(V.Ambient.ErrorNumber,<>,0)
+	Function.Intrinsic.String.Concat("Project: GCG_3934_Cust_XRef_Maint.gas",V.Ambient.Newline,V.Ambient.Newline,"Subroutine: ",V.Ambient.CurrentSubroutine,V.Ambient.NewLine,"Error Occurred ",V.Ambient.ErrorNumber," with description ",V.Ambient.ErrorDescription,V.Local.sError)
+	F.Intrinsic.UI.Msgbox(V.Local.sError)
+	Function.Intrinsic.Control.CallSub(Ss_form1_unload)
+Function.Intrinsic.Control.EndIf
+
+
+Program.Sub.Populate.End
+
+Program.Sub.txtCust_GotFocus.Start
+F.Intrinsic.Control.SetErrorHandler("txtCust_GotFocus_Err")
+F.Intrinsic.Control.ClearErrors
+
+V.Local.sError.Declare(String)
+
+Gui.SS_Form1.txtCust.SelectAll
+
+F.Intrinsic.Control.ExitSub
+
+F.Intrinsic.Control.Label("txtCust_GotFocus_Err")
+F.Intrinsic.Control.If(V.Ambient.ErrorNumber,<>,0)
+	Function.Intrinsic.String.Concat("Project: GCG_3934_Cust_XRef_Maint.gas",V.Ambient.Newline,V.Ambient.Newline,"Subroutine: ",V.Ambient.CurrentSubroutine,V.Ambient.NewLine,"Error Occurred ",V.Ambient.ErrorNumber," with description ",V.Ambient.ErrorDescription,V.Local.sError)
+	F.Intrinsic.UI.Msgbox(V.Local.sError)
+	Function.Intrinsic.Control.CallSub(Ss_form1_unload)
+Function.Intrinsic.Control.EndIf
+
+
+Program.Sub.txtCust_GotFocus.End
+
+Program.Sub.Comments.Start
+${$0$}$GCG_Cust_XRef_Maint$}$TRT$}$6/28/2015
+${$3$}$0$}$$}$-1$}$-1$}$$}$1/1/1900$}$Quote 6710
+'coded: TRT
+06282015
+
+Customer Maintenance Program:
+
+This will be a custom menu item in Inventory -> Administration -> Customer XRef Maint.   This is where the Customers will be added/removed that need to have the Part XRef added.  If the Customer is not listed they will not be affected by the Part XRef.
+Program.Sub.Comments.End
+Program.Sub.ScreenSS.Start
+SS_Form1{{CAPTION::XRef Customer Maint.
+SS_Form1.CTRL{{NAME::txtCust\\TYPE::2\\CAPTION::Cust\\GROUP::1\\BROWSER::0\\SIZE::1
+SS_Form1.CTRL{{NAME::txtName\\TYPE::2\\CAPTION::Name\\GROUP::1\\BROWSER::1\\SIZE::3
+SS_Form1.CTRL{{NAME::cmdAdd\\TYPE::5\\CAPTION::Add\\GROUP::2\\BROWSER::0\\SIZE::1
+SS_Form1.CTRL{{NAME::cmdDelete\\TYPE::5\\CAPTION::Delete\\GROUP::2\\BROWSER::0\\SIZE::1
+SS_Form1.CTRL{{NAME::lvwCust\\TYPE::7\\GROUP::-1\\BROWSER::0\\SIZE::1
+
+Program.Sub.ScreenSS.End
+
